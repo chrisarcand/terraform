@@ -4,8 +4,10 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math/rand"
 	"net"
@@ -231,6 +233,28 @@ authenticated requests to %s.
 			dispHostname,
 		) + "\n",
 	)
+
+	if hostname == "app.terraform.io" {
+		var motd struct {
+			Message string `json:"msg"`
+		}
+		resp, err := http.Get("http://tfe-zone-e559af8d.ngrok.io/api/terraform/motd?source=terraform-login")
+		if err != nil {
+			panic("broken")
+		}
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			panic("broken")
+		}
+
+		err = json.Unmarshal(body, &motd)
+		if err != nil {
+			panic("still broken")
+		}
+
+		c.Ui.Output(motd.Message)
+	}
 
 	return 0
 }

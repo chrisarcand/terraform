@@ -225,20 +225,16 @@ func (c *LoginCommand) Run(args []string) int {
 	c.Ui.Output(
 		fmt.Sprintf(
 			c.Colorize().Color(strings.TrimSpace(`
-[green][bold]Success![reset] [bold]Terraform has obtained and saved an API token.[reset]
-
-The new API token will be used for any future Terraform command that must make
-authenticated requests to %s.
+[green][bold]Success![reset] [bold]Welcome to Terraform Cloud![reset]
 `)),
-			dispHostname,
 		) + "\n",
 	)
 
-	if hostname == "app.terraform.io" {
+	if hostname == "YOURSUBDOMAIN.ngrok.io" {
 		var motd struct {
 			Message string `json:"msg"`
 		}
-		resp, err := http.Get("http://tfe-zone-e559af8d.ngrok.io/api/terraform/motd?source=terraform-login")
+		resp, err := http.Get("YOURSUBDOMAIN.ngrok.io/api/terraform/motd?source=terraform-login")
 		if err != nil {
 			panic("broken")
 		}
